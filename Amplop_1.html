@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amplop Cinta Untukmu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Georgia', serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+            color: #fff;
+        }
+        
+        .starry-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite alternate;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+            margin: 20px auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .title-section {
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeInDown 1.5s ease forwards;
+        }
+        
+        h1 {
+            color: #ffafcc;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px rgba(255, 175, 204, 0.7);
+            font-size: 3.5rem;
+            letter-spacing: 2px;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .subtitle {
+            color: #a2d2ff;
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+            letter-spacing: 1px;
+            font-style: italic;
+        }
+        
+        .date {
+            color: #cdb4db;
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+        
+        .envelope-section {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            margin-bottom: 50px;
+            perspective: 1200px;
+        }
+        
+        .envelope-wrapper {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            height: 280px;
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        .envelope {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .envelope.open {
+            transform: translateY(-120px) rotateX(180deg);
+        }
+        
+        .envelope-front, .envelope-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+        }
+        
+        .envelope-front {
+            background: linear-gradient(145deg, #ffafcc, #ff8fab);
+            z-index: 3;
+            transform: rotateX(0deg);
+        }
+        
+        .envelope-back {
+            background: linear-gradient(145deg, #ffc8dd, #ffafcc);
+            transform: rotateX(180deg);
+        }
+        
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 200px solid #ff8fab;
+            border-right: 200px solid #ff8fab;
+            border-top: 140px solid #ff477e;
+            border-radius: 12px 12px 0 0;
+            z-index: 4;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+        }
+        
+        .body {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 170px;
+            background: linear-gradient(145deg, #ffafcc, #ff8fab);
+            border-radius: 0 0 12px 12px;
+            z-index: 2;
+        }
+        
+        .seal {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #ff477e, #ff0a54);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+            box-shadow: 0 10px 25px rgba(255, 71, 126, 0.5);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.5s ease;
+            cursor: pointer;
+        }
+        
+        .seal:hover {
+            transform: translateX(-50%) scale(1.1);
+            box-shadow: 0 15px 30px rgba(255, 71, 126, 0.7);
+        }
+        
+        .seal i {
+            color: white;
+            font-size: 40px;
+            animation: heartbeat 1.5s infinite;
+        }
+        
+        .letter {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 360px;
+            height: 420px;
+            background: linear-gradient(to bottom right, #fff9fb, #fff0f5);
+            border-radius: 8px;
+            padding: 40px 35px;
+            text-align: left;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            z-index: 1;
+            overflow: hidden;
+            transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0;
+            transform: translateX(-50%) translateY(50px);
+        }
+        
+        .letter.open {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        .letter-content {
+            height: 100%;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .letter-content::-webkit-scrollbar {
+            width: 5px;
+        }
+        
+        .letter-content::-webkit-scrollbar-track {
+            background: rgba(255, 182, 193, 0.1);
+            border-radius: 10px;
+        }
+        
+        .letter-content::-webkit-scrollbar-thumb {
+            background: #ff8fab;
+            border-radius: 10px;
+        }
+        
+        .letter-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ffafcc;
+        }
+        
+        .letter-title {
+            color: #ff0a54;
+            font-size: 2.2rem;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 10px;
+        }
+        
+        .letter-date {
+            color: #ff8fab;
+            font-style: italic;
+            font-size: 1.1rem;
+        }
+        
+        .letter-body {
+            color: #333;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+        
+        .letter-body p {
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+        
+        .highlight {
+            color: #ff0a54;
+            font-weight: bold;
+        }
+        
+        .signature {
+            margin-top: 40px;
+            text-align: right;
+            padding-top: 20px;
+            border-top: 1px dashed #ffafcc;
+        }
+        
+        .signature-name {
+            color: #ff0a54;
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .signature-date {
+            color: #ff8fab;
+            font-style: italic;
+        }
+        
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        button {
+            background: linear-gradient(to right, #ff477e, #ff0a54);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(255, 71, 126, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 1px;
+        }
+        
+        button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(255, 71, 126, 0.5);
+            background: linear-gradient(to right, #ff0a54, #ff477e);
+        }
+        
+        button:active {
+            transform: translateY(-2px);
+        }
+        
+        .memory-section {
+            margin-top: 60px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s ease;
+        }
+        
+        .memory-section.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .memory-title {
+            color: #a2d2ff;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .memory-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .memory-item:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #ffafcc;
+        }
+        
+        .memory-icon {
+            font-size: 30px;
+            color: #ffafcc;
+            margin-bottom: 10px;
+        }
+        
+        .memory-text {
+            color: #fff;
+            font-size: 1rem;
+        }
+        
+        .music-player {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 100;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .music-btn {
+            background: transparent;
+            border: none;
+            color: #ffafcc;
+            font-size: 24px;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            padding: 0;
+            box-shadow: none;
+        }
+        
+        .music-btn:hover {
+            background: rgba(255, 175, 204, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .music-info {
+            color: #a2d2ff;
+            font-size: 0.9rem;
+            max-width: 200px;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            color: #cdb4db;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+        }
+        
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .floating-heart {
+            position: absolute;
+            color: rgba(255, 71, 126, 0.7);
+            font-size: 24px;
+            animation: floatHeart 15s infinite linear;
+        }
+        
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .love-quote {
+            margin-top: 40px;
+            font-style: italic;
+            color: #ffafcc;
+            font-size: 1.2rem;
+            opacity: 0;
+            animation: fadeIn 2s ease forwards 1s;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            .envelope-wrapper {
+                width: 320px;
+                height: 220px;
+            }
+            
+            .flap {
+                border-left: 160px solid #ff8fab;
+                border-right: 160px solid #ff8fab;
+                border-top: 110px solid #ff477e;
+            }
+            
+            .letter {
+                width: 300px;
+                height: 380px;
+                padding: 30px 25px;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .memory-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .music-player {
+                bottom: 20px;
+                right: 20px;
+                left: 20px;
+                justify-content: center;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="starry-bg" id="starry-bg"></div>
+    <div class="floating-hearts" id="floating-hearts"></div>
+    
+    <div class="container">
+        <div class="title-section">
+            <h1>Untuk Cinta Sejati</h1>
+            <p class="subtitle">Sebuah pesan dari hati yang paling dalam</p>
+            <p class="date">14 Februari 2025</p>
+        </div>
+        
+        <div class="envelope-section">
+            <div class="envelope-wrapper">
+                <div class="envelope" id="envelope">
+                    <div class="envelope-front">
+                        <div class="flap"></div>
+                        <div class="body"></div>
+                        <div class="seal" id="seal">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                    </div>
+                    <div class="envelope-back"></div>
+                </div>
+                
+                <div class="letter" id="letter">
+                    <div class="letter-content">
+                        <div class="letter-header">
+                            <h2 class="letter-title">Surat Untukmu</h2>
+                            <p class="letter-date">Hari Valentine, 14 Februari 2025</p>
+                        </div>
+                        
+                        <div class="letter-body">
+                            <p>Sayangku,</p>
+                            
+                            <p>Di hari yang penuh makna ini, aku ingin mengungkapkan sesuatu yang mungkin sudah kamu ketahui, tapi tetap perlu diucapkan: <span class="highlight">aku mencintaimu lebih dari kata-kata bisa gambarkan</span>.</p>
+                            
+                            <p>Tidak semua cinta mendapatkan kesempatan untuk tumbuh seperti milik kita. Tidak semua orang beruntung menemukan seseorang yang membuatnya menjadi versi terbaik dari dirinya sendiri. <span class="highlight">Aku bersyukur setiap hari</span> karena kamu adalah bagian dari hidupku.</p>
+                            
+                            <p>Masih teringat jelas pertama kali kita bertemu. Saat itu aku tidak menyangka bahwa orang yang duduk di seberangku akan menjadi alasan senyumku setiap pagi, alasan kekuatanku saat lelah, dan alasan hatiku berdetak lebih kencang.</p>
+                            
+                            <p>Bersamamu, aku belajar bahwa cinta bukan hanya tentang perasaan bahagia, tetapi juga tentang <span class="highlight">kesediaan untuk bertumbuh bersama, saling mendukung dalam diam, dan memahami tanpa perlu banyak kata</span>.</p>
+                            
+                            <p>Terima kasih telah menjadi tempat pulangku, terima kasih atas setiap tawa dan air mata yang kita bagi, terima kasih atas kesabaranmu, dan terima kasih karena selalu ada.</p>
+                            
+                            <p>Di hari Valentine ini, aku berjanji untuk terus mencintaimu dengan sepenuh hati, menghargai setiap momen bersamamu, dan menjadi pasangan yang layak untuk cinta tulus yang kamu berikan.</p>
+                            
+                            <p><span class="highlight">Kamu adalah jawaban dari doa-doaku</span>, keindahan dalam hidupku, dan alasan aku percaya pada cinta sejati.</p>
+                        </div>
+                        
+                        <div class="signature">
+                            <div class="signature-name">Selamanya milikmu</div>
+                            <div class="signature-date">Dengan cinta yang tak akan pernah pudar</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="openBtn">
+                <i class="fas fa-envelope-open"></i>
+                Buka Surat Cinta
+            </button>
+            <button id="memoryBtn">
+                <i class="fas fa-memory"></i>
+                Kenangan Kita
+            </button>
+        </div>
+        
+        <div class="love-quote">
+            "Cinta sejati bukan tentang menemukan orang yang sempurna, tetapi tentang melihat seseorang yang tidak sempurna dengan cara yang sempurna."
+        </div>
+        
+        <div class="memory-section" id="memorySection">
+            <h3 class="memory-title">Kenangan Indah Bersamamu</h3>
+            <div class="memory-grid">
+                <div class="memory-item">
+                    <div class="memory-icon"><i class="fas fa-first-aid"></i></div>
+                    <div class="memory-text">Pertemuan Pertama</div>
+                </div>
+                <div class="memory-item">
+                    <div class="memory-icon"><i class="fas fa-heart"></i></div>
+                    <div class="memory-text">Pengakuan Cinta</div>
+                </div>
+                <div class="memory-item">
+                    <div class="memory-icon"><i class="fas fa-umbrella-beach"></i></div>
+                    <div class="memory-text">Liburan Pertama</div>
+                </div>
+                <div class="memory-item">
+                    <div class="memory-icon"><i class="fas fa-birthday-cake"></i></div>
+                    <div class="memory-text">Ulang Tahun Bersama</div>
+                </div>
+                <div class="memory-item">
+                    <div class="memory-icon"><i class="fas fa-film"></i></div>
+                    <div class="memory-text">Film Marathon</div>
+                </div>
+                <div class="memory-item">
+                    <div class="memory-icon"><i class="fas fa-hands-helping"></i></div>
+                    <div class="memory-text">Saling Mendukung</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Dibuat dengan <i class="fas fa-heart" style="color:#ff477e;"></i> untuk hari Valentine yang bermakna | Setiap kata berasal dari hati yang tulus</p>
+            <p style="margin-top:10px; font-size:0.8rem;">❤️ Cinta adalah ketika kebahagiaan orang lain menjadi kebahagiaanmu juga ❤️</p>
+        </div>
+    </div>
+
+    <script>
+        // Elemen utama
+        const envelope = document.getElementById('envelope');
+        const letter = document.getElementById('letter');
+        const openBtn = document.getElementById('openBtn');
+        const seal = document.getElementById('seal');
+        const memoryBtn = document.getElementById('memoryBtn');
+        const memorySection = document.getElementById('memorySection');
+        const playBtn = document.getElementById('playBtn');
+        const bgMusic = document.getElementById('bgMusic');
+        const musicInfo = document.getElementById('musicInfo');
+        const starryBg = document.getElementById('starryBg');
+        const floatingHearts = document.getElementById('floating-hearts');
+        
+        // Status
+        let isOpen = false;
+        let isMusicPlaying = false;
+        let memoriesShown = false;
+        
+        // Inisialisasi bintang di background
+        function createStars() {
+            const starryBg = document.getElementById('starry-bg');
+            for (let i = 0; i < 150; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                const size = Math.random() * 3 + 1;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                const duration = Math.random() * 5 + 3;
+                
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${posX}%`;
+                star.style.top = `${posY}%`;
+                star.style.setProperty('--duration', `${duration}s`);
+                
+                starryBg.appendChild(star);
+            }
+        }
+        
+        // Buat hati mengambang
+        function createFloatingHearts() {
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('floating-heart');
+                heart.innerHTML = '❤';
+                
+                const leftPos = Math.random() * 100;
+                const size = Math.random() * 20 + 15;
+                const duration = Math.random() * 10 + 15;
+                const delay = Math.random() * 10;
+                
+                heart.style.left = `${leftPos}%`;
+                heart.style.fontSize = `${size}px`;
+                heart.style.animationDuration = `${duration}s`;
+                heart.style.animationDelay = `${delay}s`;
+                
+                floatingHearts.appendChild(heart);
+            }
+        }
+        
+        // Buka/tutup amplop
+        function toggleEnvelope() {
+            isOpen = !isOpen;
+            
+            if (isOpen) {
+                envelope.classList.add('open');
+                setTimeout(() => {
+                    letter.classList.add('open');
+                }, 400);
+                openBtn.innerHTML = '<i class="fas fa-envelope"></i> Tutup Surat Cinta';
+                
+                // Tampilkan kenangan setelah surat terbuka
+                setTimeout(() => {
+                    if (!memoriesShown) {
+                        memorySection.classList.add('show');
+                        memoriesShown = true;
+                    }
+                }, 1500);
+                
+                // Buat efek hati saat surat terbuka
+                createHeartEffect();
+            } else {
+                envelope.classList.remove('open');
+                letter.classList.remove('open');
+                openBtn.innerHTML = '<i class="fas fa-envelope-open"></i> Buka Surat Cinta';
+            }
+        }
+        
+        // Efek hati saat membuka surat
+        function createHeartEffect() {
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.innerHTML = '❤';
+                    heart.style.position = 'fixed';
+                    heart.style.color = '#ff477e';
+                    heart.style.fontSize = `${Math.random() * 25 + 20}px`;
+                    heart.style.left = `${Math.random() * 80 + 10}%`;
+                    heart.style.top = '50%';
+                    heart.style.transform = 'translate(-50%, -50%)';
+                    heart.style.zIndex = '9999';
+                    heart.style.opacity = '0.8';
+                    heart.style.pointerEvents = 'none';
+                    heart.style.transition = 'all 1s ease-out';
+                    
+                    document.body.appendChild(heart);
+                    
+                    // Animasikan hati
+                    setTimeout(() => {
+                        heart.style.opacity = '0';
+                        heart.style.transform = `translate(-50%, -200px) scale(0.5)`;
+                        heart.style.color = '#ffafcc';
+                    }, 50);
+                    
+                    // Hapus elemen setelah animasi
+                    setTimeout(() => {
+                        if (heart.parentNode) {
+                            heart.parentNode.removeChild(heart);
+                        }
+                    }, 1100);
+                }, i * 100);
+            }
+        }
+        
+        // Kontrol musik
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                bgMusic.pause();
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                musicInfo.textContent = 'Musik Cinta - Klik untuk memutar';
+                isMusicPlaying = false;
+            } else {
+                bgMusic.play().then(() => {
+                    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    musicInfo.textContent = 'Lagu: Loving You - Valentine Theme';
+                    isMusicPlaying = true;
+                }).catch(error => {
+                    console.log("Autoplay diblokir, klik lagi untuk memutar");
+                    musicInfo.textContent = 'Klik tombol play untuk memutar musik';
+                });
+            }
+        }
+        
+        // Tampilkan kenangan
+        function toggleMemories() {
+            memorySection.classList.toggle('show');
+            if (memorySection.classList.contains('show')) {
+                memoryBtn.innerHTML = '<i class="fas fa-times"></i> Tutup Kenangan';
+            } else {
+                memoryBtn.innerHTML = '<i class="fas fa-memory"></i> Kenangan Kita';
+            }
+        }
+        
+        // Event listeners
+        envelope.addEventListener('click', toggleEnvelope);
+        seal.addEventListener('click', toggleEnvelope);
+        openBtn.addEventListener('click', toggleEnvelope);
+        memoryBtn.addEventListener('click', toggleMemories);
+        playBtn.addEventListener('click', toggleMusic);
+        
+        // Efek ketik untuk surat
+        function typeWriterEffect() {
+            const letterBody = document.querySelector('.letter-body');
+            const originalHTML = letterBody.innerHTML;
+            letterBody.innerHTML = '';
+            
+            const text = originalHTML.replace(/<[^>]*>/g, '');
+            const words = text.split(' ');
+            let i = 0;
+            
+            function typeWord() {
+                if (i < words.length) {
+                    // Tambahkan kata dengan mempertahankan HTML asli
+                    const currentText = originalHTML.split(' ').slice(0, i+1).join(' ');
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = currentText;
+                    
+                    // Cari tag yang terbuka dan tutup dengan benar
+                    letterBody.innerHTML = tempDiv.innerHTML;
+                    
+                    i++;
+                    setTimeout(typeWord, 50);
+                }
+            }
+            
+            // Mulai efek ketik saat surat dibuka
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.attributeName === 'class' && 
+                        letter.classList.contains('open') && 
+                        !letter.classList.contains('typed')) {
+                        letter.classList.add('typed');
+                        setTimeout(typeWord, 500);
+                    }
+                });
+            });
+            
+            observer.observe(letter, { attributes: true });
+        }
+        
+        // Inisialisasi
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            createFloatingHearts();
+            typeWriterEffect();
+            
+            // Animasi masuk
+            setTimeout(() => {
+                document.querySelector('.title-section').style.animation = 'fadeInDown 1.5s ease forwards';
+            }, 300);
+            
+            // Coba putar musik secara otomatis
+            setTimeout(() => {
+                bgMusic.play().then(() => {
+                    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    musicInfo.textContent = 'Lagu: Loving You - Valentine Theme';
+                    isMusicPlaying = true;
+                }).catch(() => {
+                    // Autoplay diblokir, biarkan pengguna mengeklik
+                    musicInfo.textContent = 'Klik tombol play untuk memutar musik cinta';
+                });
+            }, 1000);
+        });
+        
+        // Efek interaktif untuk kenangan
+        document.querySelectorAll('.memory-item').forEach(item => {
+            item.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+                
+                // Tampilkan pesan acak untuk setiap kenangan
+                const messages = [
+                    "Momen tak terlupakan yang selalu menghangatkan hati",
+                    "Kenangan indah yang membuatku tersenyum sendiri",
+                    "Saat-saat berharga yang takkan pernah terlupakan",
+                    "Waktu terbaik dalam hidupku adalah bersamamu",
+                    "Setiap detik bersamamu adalah anugerah",
+                    "Kebahagiaan sederhana yang berarti segalanya"
+                ];
+                
+                const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+                
+                // Buat notifikasi kecil
+                const notification = document.createElement('div');
+                notification.textContent = randomMsg;
+                notification.style.position = 'fixed';
+                notification.style.bottom = '100px';
+                notification.style.left = '50%';
+                notification.style.transform = 'translateX(-50%)';
+                notification.style.background = 'rgba(255, 71, 126, 0.9)';
+                notification.style.color = 'white';
+                notification.style.padding = '15px 25px';
+                notification.style.borderRadius = '50px';
+                notification.style.zIndex = '10000';
+                notification.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
+                notification.style.fontSize = '1rem';
+                notification.style.maxWidth = '80%';
+                notification.style.textAlign = 'center';
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    notification.style.transition = 'opacity 0.5s ease';
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    }, 500);
+                }, 3000);
+            });
+        });
+    </script>
+</body>
+</html>
